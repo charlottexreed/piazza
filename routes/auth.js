@@ -13,14 +13,14 @@ router.post('/register', async(req,res)=> {
 
     // Validation to check user input against the requirements
     const {err} = registerValidation(req.body)
-    if(err) {
+    if (err) {
         return res.status(400).send({message:err})
     }
 
 
     // Validation to check if the user exists
     const userExists = await User.findOne({email:req.body.email})
-    if(userExists){
+    if (userExists) {
         return res.status(400).send({message:'User already exists'})
     }
 
@@ -37,7 +37,7 @@ router.post('/register', async(req,res)=> {
         email:req.body.email,
         password:hashedPassword
     })
-    try{
+    try {
         const savedUser = await user.save()
         res.send(savedUser)
     } catch(err){
@@ -50,19 +50,19 @@ router.post('/register', async(req,res)=> {
 router.post('/login', async(req,res)=> {
     // Validation to check user input against the requirements
     const {err} = loginValidation(req.body)
-    if(err) {
+    if (err) {
         return res.status(400).send({message:err})
     }
 
     // Validation to check if the user exists
     const user = await User.findOne({email:req.body.email})
-    if(!user){
+    if (!user) {
         return res.status(400).send({message:'User does not exist'})
     }
 
     // Validation to check if the password is correct
     const passwordValidation = await bcryptjs.compare(req.body.password, user.password)
-    if(!passwordValidation) {
+    if (!passwordValidation) {
         return res.status(400).send({message:'Password is incorrect'})
     }
 

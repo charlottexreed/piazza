@@ -6,9 +6,9 @@ require('dotenv/config')
 
 // Initialises the routes so you can access them from the mentioned link
 const authRoute = require('./routes/auth')
-const feedRoute = require('./routes/posts')
+const postsRoute = require('./routes/posts')
 app.use('/api/user', authRoute)
-app.use('/api/feed', feedRoute)
+app.use('/api/posts', postsRoute)
 
 
 // Connects to the MongoDB database and listens to the port, taken from the labs

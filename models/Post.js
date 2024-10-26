@@ -24,6 +24,7 @@ const postSchema = mongoose.Schema({
     },
     expiry_time:{
         type:Date,
+        default: () => Date.now() + 30 * 60 * 1000,
         required: true
     },
     status:{
