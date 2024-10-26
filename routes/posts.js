@@ -1,28 +1,14 @@
 const express = require('express')
 const router = express.Router()
-
 const Post = require('../models/Post')
 const Interaction = require('../models/Interaction')
 const verifyToken = require('../verifyToken')
+const postController = require('../controllers/postsController');
 
 // Basic get
-router.get('/', verifyToken, async(req,res)=> {
-    try {
-        const posts = await Post.find()
-        res.send(posts)
-    } catch(err){
-        res.status(400).send({message:err})
-    }
-})
+router.get('/', verifyToken, postController.getAllPosts)
 // Gets specific post by postId
-router.get('/:postId', verifyToken, async(req,res)=> {
-    try {
-        const post = await Post.findById(req.params.postId)
-        res.send(post)
-    } catch(err){
-        res.status(400).send({message:err})
-    }
-})
+router.get('/:postId', verifyToken, postController.getSpecificPost)
 
 router.post('/', verifyToken, async(req,res) => {
     const postData = new Post({
@@ -59,7 +45,6 @@ router.post('/:postId/interaction', verifyToken, async (req,res) => {
             return res.status(400).send({ message: 'You cannot interact with your own post' });
         }
 
-
         // Checks if the post is expired and stops interaction if it has
         if (post.status.includes('Expired')) {
             return res.status(400).send({ message: 'Post has expired, no longer able to interact' });
@@ -69,6 +54,7 @@ router.post('/:postId/interaction', verifyToken, async (req,res) => {
         if (!['like', 'dislike'].includes(type)) {
             return res.status(400).send({ message: 'Invalid interaction type' });
         }
+
         // Finds if there is an existing interaction e.g. an interaction
         // ith the same post and same user in the schema
         const existingInteraction = await Interaction.findOne({ post: postId, user: userId });
