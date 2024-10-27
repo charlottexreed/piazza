@@ -9,7 +9,7 @@ const postSchema = mongoose.Schema({
     },
     topic:{
         type:[String],
-        enum: ['Politics', 'Health', 'Sport', 'Tech'], //Array of strings that is then restricted
+        enum: ['Politics', 'Health', 'Sport', 'Tech'], // Array of strings that is then restricted
         required:true
     },
     body:{

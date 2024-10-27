@@ -17,13 +17,11 @@ router.post('/register', async(req,res)=> {
         return res.status(400).send({message:err})
     }
 
-
     // Validation to check if the user exists
     const userExists = await User.findOne({email:req.body.email})
     if (userExists) {
         return res.status(400).send({message:'User already exists'})
     }
-
 
     // Created a hashed representation of the password
     const salt = await bcryptjs.genSalt(5)

@@ -10,7 +10,6 @@ const postsRoute = require('./routes/posts')
 app.use('/api/user', authRoute)
 app.use('/api/posts', postsRoute)
 
-
 // Connects to the MongoDB database and listens to the port, taken from the labs
 mongoose.connect(process.env.DB_CONNECTOR)
     .then(() => {
