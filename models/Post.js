@@ -2,29 +2,29 @@ const mongoose = require('mongoose')
 
 const postSchema = mongoose.Schema({
     title:{
-        type:String,
-        required:true,
-        min:3,
-        max:70
+        type: String,
+        required: true,
+        min: 3,
+        max: 70
     },
     topic:{
-        type:[String],
+        type: [String],
         enum: ['Politics', 'Health', 'Sport', 'Tech'], // Array of strings that is then restricted
-        required:true
+        required: true
     },
     body:{
-        type:String,
-        required:true,
-        min:6,
-        max:1024
+        type: String,
+        required: true,
+        min: 6,
+        max: 1024
     },
     upload_time:{
-        type:Date,
-        default:Date.now
+        type: Date,
+        default: Date.now
     },
     expiry_time:{
-        type:Date,
-        default: () => Date.now() + 30 * 60 * 1000,
+        type: Date,
+        default: () => Date.now(),
         required: true
     },
     status:{
@@ -44,7 +44,15 @@ const postSchema = mongoose.Schema({
     interactions: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Interaction'
-    }]
+    }],
+    like_count: {
+        type: Number,
+        default: 0
+    },
+    dislike_count: {
+        type: Number,
+        default: 0
+    }
 })
 
 module.exports = mongoose.model('post', postSchema)

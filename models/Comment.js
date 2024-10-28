@@ -12,7 +12,7 @@ const interactionSchema = mongoose.Schema({
         ref: 'User',
         required: true
     },
-    commentBody: {
+    comment_body: {
         type: String,
         required: true,
         max: 500

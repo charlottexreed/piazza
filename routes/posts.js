@@ -1,19 +1,20 @@
 const express = require('express')
 const router = express.Router()
-const Post = require('../models/Post')
-const Interaction = require('../models/Interaction')
-const verifyToken = require('../verifyToken')
+const verifyToken = require('../middleware/verifyToken')
+const checkExpiry = require('../middleware/checkExpiry')
 const postController = require('../controllers/postsController');
 
-// Basic get
-router.get('/', verifyToken, postController.getAllPosts)
+// Basic get (can be queried for expired or live
+router.get('/', checkExpiry, verifyToken, postController.getPosts)
+
 // Gets specific post by postId
-router.get('/:postId', verifyToken, postController.getSpecificPost)
-router.get('/topic/:topic', verifyToken, postController.getPostsByTopic)
+router.get('/:postId', checkExpiry, verifyToken, postController.getSpecificPost)
+// Gets posts by topic
+router.get('/topic/:topic', checkExpiry, verifyToken, postController.getPosts)
 // Create a post through a schema
-router.post('/', verifyToken, postController.createPost)
+router.post('/', checkExpiry, verifyToken, postController.createPost)
 // Add interaction (like or dislike) to a post
-router.post('/:postId/interaction', verifyToken, postController.addInteraction)
+router.post('/:postId/interaction', checkExpiry, verifyToken, postController.addInteraction)
 
 
 module.exports = router

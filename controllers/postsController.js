@@ -2,9 +2,8 @@ const postsCreate = require('./postsCreate');
 const postsRead = require('./postsRead');
 
 module.exports = {
-    getAllPosts: postsRead.getAllPosts,
+    getPosts: postsRead.getPosts,
     getSpecificPost: postsRead.getSpecificPost,
     createPost: postsCreate.createPost,
     addInteraction: postsCreate.addInteraction,
-    getPostsByTopic: postsRead.getPostsByTopic
 };

@@ -2,10 +2,16 @@ const Post = require("../models/Post");
 const Interaction = require("../models/Interaction");
 
 const createPost = async(req,res) => {
+
+    // Adds the expiry time in minutes as it is passed through, if it is not it defaults to 30 minutes
+    const expiry_minutes = req.body.expiry_minutes || 30
+    const expiry_time = new Date(Date.now() + expiry_minutes * 60 * 1000);
+
     const postData = new Post({
         title: req.body.title,
         topic: req.body.topic,
         body: req.body.body,
+        expiry_time,
         owner: req.user._id
     })
 
@@ -53,6 +59,14 @@ const addInteraction = async (req,res) => {
             // existing interaction, if it is different it updates
             // the old interaction to reflect the new choice
             if (existingInteraction.type !== type) {
+                // Adjust counts for existing interaction change
+                if (existingInteraction.type === 'like') {
+                    post.like_count -= 1;
+                    post.dislike_count += 1;
+                } else if (existingInteraction.type === 'dislike') {
+                    post.dislike_count -= 1;
+                    post.like_count += 1;
+                }
                 existingInteraction.type = type;
                 await existingInteraction.save();
             } else {
