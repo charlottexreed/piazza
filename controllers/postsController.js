@@ -6,4 +6,8 @@ module.exports = {
     getSpecificPost: postsRead.getSpecificPost,
     createPost: postsCreate.createPost,
     addInteraction: postsCreate.addInteraction,
+    getMostInteracted: postsRead.getMostInteracted,
+    getPostsByTopic: postsRead.getPostsByTopic,
+    addComment: postsCreate.addComment,
+    getAllPosts: postsRead.getAllPosts
 };
