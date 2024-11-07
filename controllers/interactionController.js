@@ -1,71 +1,5 @@
 const Post = require("../models/Post");
 const Interaction = require("../models/Interaction");
-const Comment = require("../models/Comment");
-
-const createPost = async(req,res) => {
-
-    // Adds the expiry time in minutes as it is passed through, if it is not it defaults to 30 minutes
-    const expiry_minutes = req.body.expiry_minutes || 30
-    const expiry_time = new Date(Date.now() + expiry_minutes * 60 * 1000);
-
-    const postData = new Post({
-        title: req.body.title,
-        topic: req.body.topic,
-        body: req.body.body,
-        expiry_time,
-        owner: req.user._id
-    })
-
-    try {
-        const postToSave = await postData.save()
-        res.send(postToSave)
-    } catch (err) {
-        res.send({message: err})
-    }
-}
-
-const addComment = async(req,res) => {
-    try {
-        const postId = req.params.postId;
-        const userId = req.user._id;
-        const post = await Post.findById(postId);
-
-        // Checks if the post exists and returns 404 if not
-        if (!post) {
-            return res.status(404).send({ message: 'Post not found.' });
-        }
-
-        // Checks if the post is expired and stops interaction if it has
-        if (post.status.includes('Expired')) {
-            return res.status(400).send({ message: 'Post has expired, no longer able to interact' });
-        }
-
-        // Checks if the user is the same as the post owner and disallows posting if
-        // the owner is the same
-        if (String(userId) === String(post.owner)) {
-            return res.status(400).send({ message: 'You cannot interact with your own post' });
-        }
-
-        const newComment = new Comment({
-            post: postId,
-            user: userId,
-            comment_body: req.body.comment_body
-        });
-        const savedComment = await newComment.save();
-
-        // Adds the comment object to the post object so
-        // you can track the likes and dislikes attached to
-        // a specific post
-        post.comments.push(savedComment._id);
-        await post.save()
-
-        res.send(savedComment);
-
-    } catch (err) {
-        res.send({message: err})
-    }
-}
-
 const addInteraction = async (req,res) => {
     try {
         const type = req.body.type;
@@ -136,9 +70,36 @@ const addInteraction = async (req,res) => {
         res.send({message:err})
     }
 }
+const getMostInteracted = async (req,res) => {
+    try {
+        // Fetch all posts from the database
+        const posts = await Post.find()
+
+        // This checks all the posts against one another to see which has the most
+        // interactions by comparing the length of the interactions array I added
+        // onto the schema
+        let mostInteractedPost = null;
+        let maxInteractions = 0;
+        posts.forEach(post => {
+            const interactionCount = post.interactions.length;
+            if (interactionCount > maxInteractions) {
+                maxInteractions = interactionCount;
+                mostInteractedPost = post;
+            }
+        });
+
+        // If none then you know there is no posts
+        if (!mostInteractedPost) {
+            return res.status(404).send({ message: 'No posts found.' });
+        }
+
+        res.send(mostInteractedPost);
+    } catch (err) {
+        res.status(400).send({ message: err.message });
+    }
+};
 
 module.exports = {
-    createPost,
     addInteraction,
-    addComment
+    getMostInteracted,
 }

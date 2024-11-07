@@ -1,5 +1,27 @@
 const Post = require("../models/Post");
 
+const createPost = async(req,res) => {
+
+    // Adds the expiry time in minutes as it is passed through, if it is not it defaults to 30 minutes
+    const expiry_minutes = req.body.expiry_minutes || 30
+    const expiry_time = new Date(Date.now() + expiry_minutes * 60 * 1000);
+
+    const postData = new Post({
+        title: req.body.title,
+        topic: req.body.topic,
+        body: req.body.body,
+        expiry_time,
+        owner: req.user._id
+    })
+
+    try {
+        const postToSave = await postData.save()
+        res.send(postToSave)
+    } catch (err) {
+        res.send({message: err})
+    }
+}
+
 const getPosts = async (req,res, filter = {}) => { // Filter is nothing by default to it will get everything
     try {
         // Checks for the query as to whether expired or live
@@ -48,40 +70,11 @@ const getSpecificPost = async(req,res) => {
     }
 }
 
-const getMostInteracted = async (req,res) => {
-    try {
-        // Fetch all posts from the database
-        const posts = await Post.find()
-
-        // This checks all the posts against one another to see which has the most
-        // interactions by comparing the length of the interactions array I added
-        // onto the schema
-        let mostInteractedPost = null;
-        let maxInteractions = 0;
-        posts.forEach(post => {
-            const interactionCount = post.interactions.length;
-            if (interactionCount > maxInteractions) {
-                maxInteractions = interactionCount;
-                mostInteractedPost = post;
-            }
-        });
-
-        // If none then you know there is no posts
-        if (!mostInteractedPost) {
-            return res.status(404).send({ message: 'No posts found.' });
-        }
-
-        res.send(mostInteractedPost);
-    } catch (err) {
-        res.status(400).send({ message: err.message });
-    }
-};
-
 
 module.exports = {
+    createPost,
     getPosts,
     getSpecificPost,
-    getMostInteracted,
     getPostsByTopic,
     getAllPosts
 }
