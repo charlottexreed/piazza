@@ -9,11 +9,11 @@ async function createPost(title, topic, body, expiry_minutes, userId) {
         const expiry_time = new Date(Date.now() + expiry_minutes * 60 * 1000);
         // Creates the post according to the schema
         const postData = new Post({
-            title: req.body.title,
-            topic: req.body.topic,
-            body: req.body.body,
+            title: title,
+            topic: topic,
+            body: body,
             expiry_time,
-            owner: req.user._id
+            owner: userId
         })
         return await postData.save()
 

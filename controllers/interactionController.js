@@ -34,7 +34,7 @@ const addInteraction = async (req,res) => {
             // was not of the same type as the existing interaction, if it is
             // different it updates the old interaction to reflect the new choice
             await interactionHelper.updateInteraction(post, existingInteraction, type);
-            res.status(201).send({ message: 'Interaction updated successfully.' });
+            res.status(200).send({ message: 'Interaction updated successfully.' });
         } else {
             // If there is no existing interaction a new interaction is created
             addedInteraction = await createHelper.createInteraction(post, postId, userId, type);
