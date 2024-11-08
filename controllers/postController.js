@@ -1,21 +1,11 @@
 const Post = require("../models/Post");
+const createHelper = require("../helpers/createHelper");
 
 const createPost = async(req,res) => {
-
-    // Adds the expiry time in minutes as it is passed through, if it is not it defaults to 30 minutes
-    const expiry_minutes = req.body.expiry_minutes || 30
-    const expiry_time = new Date(Date.now() + expiry_minutes * 60 * 1000);
-
-    const postData = new Post({
-        title: req.body.title,
-        topic: req.body.topic,
-        body: req.body.body,
-        expiry_time,
-        owner: req.user._id
-    })
-
     try {
-        const postToSave = await postData.save()
+        // Creates the post and returns it
+        postToSave = await createHelper.createPost(req.body.title, req.body.topic,
+            req.body.body, req.body.expiry_minutes, req.user._id)
         res.send(postToSave)
     } catch (err) {
         res.send({message: err})
