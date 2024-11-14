@@ -15,7 +15,7 @@ router.get('/:postId', checkExpiry, verifyToken, postController.getSpecificPost)
 // Gets posts by topic
 router.get('/topic/:topic', checkExpiry, verifyToken, postController.getPostsByTopic);
 // Create a post through a schema
-router.post('/', checkExpiry, verifyToken, postController.createPost);
+router.post('/', checkExpiry, verifyToken, postController.addPost);
 // Add interaction (like or dislike) to a post
 router.post('/:postId', checkExpiry, verifyToken, interactionController.addInteraction);
 // Add comment to a post

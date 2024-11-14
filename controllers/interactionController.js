@@ -34,11 +34,11 @@ const addInteraction = async (req,res) => {
             // If there is an existing interaction, checks if the new interaction
             // was not of the same type as the existing interaction, if it is
             // different it updates the old interaction to reflect the new choice
-            await interactionHelper.updateInteraction(res, post, existingInteraction, type);
+            await interactionHelper.updateInteraction(post, existingInteraction, type);
             res.status(200).send({ message: 'Interaction updated successfully.' });
         } else {
             // If there is no existing interaction a new interaction is created
-            addedInteraction = await createHelper.createInteraction(res, post, postId, userId, type)
+            addedInteraction = await createHelper.createInteraction(post, postId, userId, type)
             res.status(201).send({ message: 'Interaction recorded successfully.' });
         }
     } catch (err) {
@@ -88,7 +88,7 @@ const deleteSpecificInteraction = async(req,res) => {
             return res.status(403).send({ message: 'You are not authorized to delete this interaction.' });
         }
         // Deletes the interaction
-        await deleteHelper.deleteInteraction(req, res, interactionId);
+        await deleteHelper.deleteInteraction(req, interactionId);
         res.status(200).send({ message: "Interaction deleted successfully" });
     } catch (err) {
         res.status(400).send({ message: "Error deleting interaction" });

@@ -23,7 +23,7 @@ const addComment = async(req,res) => {
         }
 
         // Creates the comment and then sends it back
-        addedComment = await createHelper.createComment(res, postId, userId, req.body.comment_body);
+        addedComment = await createHelper.createComment(postId, userId, req.body.comment_body);
         res.send(addedComment);
 
     } catch (err) {
@@ -45,7 +45,7 @@ const deleteSpecificComment = async(req,res) => {
             return res.status(403).send({ message: 'You are not authorized to delete this comment.' });
         }
         // Deletes the interaction
-        await deleteHelper.deleteComment(res, commentId);
+        await deleteHelper.deleteComment(commentId);
         res.status(200).send({ message: "Comment deleted successfully" });
     } catch (err) {
         res.status(400).send({ message: "Error deleting comment" });

@@ -2,18 +2,23 @@ const Post = require("../models/Post");
 const createHelper = require("../helpers/createHelper");
 const deleteHelper = require("../helpers/deleteHelper");
 
-const createPost = async(req,res) => {
+const addPost = async(req,res) => {
     try {
+        console.log("hi");
+        // Adds the expiry time in minutes as it is passed through, if it is not it defaults to 30 minutes
+        const expiry_minutes = req.body.expiry_minutes || 30;
+        const expiry_time = new Date(Date.now() + expiry_minutes * 60 * 1000);
+
         // Creates the post and returns it
-        postToSave = await createHelper.createPost(res, req.body.title, req.body.topic,
-            req.body.body, req.body.expiry_minutes, req.user._id);
+        const postToSave = await createHelper.createPost(req.body.title, req.body.topic,
+            req.body.body, expiry_time, req.user._id);
         res.send(postToSave);
     } catch (err) {
         res.send({message: err});
     }
 }
 
-const getPosts = async (req,res, filter = {}) => { // Filter is nothing by default to it will get everything
+const getPosts = async (req,res, filter = {}) => { // Filter is nothing by default so it will get everything
     try {
         // Checks for the query as to whether expired or live
         if (req.query.expired === 'true') {
@@ -65,26 +70,27 @@ const deleteSpecificPost = async(req,res) => {
     try {
         const post = await Post.findById(req.params.postId);
         const postId = req.params.postId;
-        const userId = req.params.userId;
+        const userId = req.user._id;
         // If the post does not exist, it cannot be deleted
         if(!post) {
             return res.status(404).send({message: 'Post not found.'});
         }
         // If the user does not have permission to delete the post, the post cannot be deleted
-        if(String(userId) !== String(post.owner)) {
+        if(!post.owner.equals(userId)) {
             return res.status(403).send({ message: 'You are not authorized to delete this post.' });
         }
         // Deletes the post
-        await deleteHelper.deletePost(res, post, postId);
+        await deleteHelper.deletePost(post, postId);
         res.status(200).send({ message: "Post deleted successfully" });
     } catch (err) {
+        console.error('Error in deleteSpecificPost:', err);
         res.status(400).send({ message: "Error deleting post" });
     }
 }
 
 
 module.exports = {
-    createPost,
+    addPost,
     getPosts,
     getSpecificPost,
     getPostsByTopic,

@@ -2,11 +2,8 @@ const Post = require("../models/Post");
 const Comment = require("../models/Comment");
 const Interaction = require("../models/Interaction");
 
-async function createPost(res, title, topic, body, expiry_minutes, userId) {
+async function createPost(title, topic, body, expiry_time, userId) {
     try {
-        // Adds the expiry time in minutes as it is passed through, if it is not it defaults to 30 minutes
-        const expiry_minutes = expiry_minutes || 30;
-        const expiry_time = new Date(Date.now() + expiry_minutes * 60 * 1000);
         // Creates the post according to the schema
         const postData = new Post({
             title: title,
@@ -18,11 +15,11 @@ async function createPost(res, title, topic, body, expiry_minutes, userId) {
         return await postData.save();
 
     } catch (err) {
-        res.send({message: err});
+        throw new Error(err.message);
     }
 }
 
-async function createComment(res, postId, userId, commentBody) {
+async function createComment(postId, userId, commentBody) {
     try {
         // Creates the comment according to the schema
         const newComment = new Comment({
@@ -40,11 +37,11 @@ async function createComment(res, postId, userId, commentBody) {
 
         return savedComment
     } catch(err) {
-        res.send({message: err});
+        throw new Error(err.message);
     }
 }
 
-async function createInteraction(res, post, postId, userId, type) {
+async function createInteraction(post, postId, userId, type) {
     try {
         // If there is no existing interaction a new interaction is created
         const newInteraction = new Interaction({
@@ -67,7 +64,7 @@ async function createInteraction(res, post, postId, userId, type) {
 
         await post.save();
     } catch(err) {
-        res.send({message: err});
+        throw new Error(err.message);
     }
 }
 

@@ -2,7 +2,7 @@ const Post = require("../models/Post");
 const Interaction = require("../models/Interaction");
 const User = require("../models/User");
 
-async function deletePost(res, post, postId) {
+async function deletePost(post, postId) {
     try {
         // Deletes all interactions and comments from the post before deleting the actual post
         if (post.comments.length > 0) {
@@ -12,16 +12,14 @@ async function deletePost(res, post, postId) {
             await Interaction.deleteMany({ _id: { $in: post.interactions } });
         }
         // Deletes the post itself
-        await Post.deleteOne({ _id: postId });
-        res.status(200).send({ message: "Post deleted successfully" });
-
+        await post.deleteOne();
 
     } catch(err) {
-        res.status(500).send({ message: "Error deleting post" });
+        throw new Error(err.message);
     }
 }
 
-async function deleteInteraction(req, res, interactionId) {
+async function deleteInteraction(req, interactionId) {
     try {
         // Changes the count of likes or dislikes on the post
         const type = req.body.type;
@@ -33,19 +31,17 @@ async function deleteInteraction(req, res, interactionId) {
         }
         // Deletes the interaction
         await Interaction.deleteOne({ _id: interactionId });
-        res.status(200).send({ message: "Interaction deleted successfully" });
     } catch(err) {
-        res.status(500).send({ message: "Error deleting interaction" });
+        throw new Error(err.message);
     }
 }
 
-async function deleteComment(res, commentId) {
+async function deleteComment(commentId) {
     try {
         // Deletes the comment
         await Comment.deleteOne({ _id: commentId });
-        res.status(200).send({ message: "Comment deleted successfully" });
     } catch(err) {
-        res.status(500).send({ message: "Error deleting comment" });
+        throw new Error(err.message);
     }
 }
 
