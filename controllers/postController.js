@@ -4,7 +4,7 @@ const createHelper = require("../helpers/createHelper");
 const createPost = async(req,res) => {
     try {
         // Creates the post and returns it
-        postToSave = await createHelper.createPost(req.body.title, req.body.topic,
+        postToSave = await createHelper.createPost(res, req.body.title, req.body.topic,
             req.body.body, req.body.expiry_minutes, req.user._id)
         res.send(postToSave)
     } catch (err) {

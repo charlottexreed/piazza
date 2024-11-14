@@ -21,7 +21,7 @@ const addComment = async(req,res) => {
         }
 
         // Creates the comment and then sends it back
-        addedComment = await createHelper.createComment(postId, userId, req.body.comment_body);
+        addedComment = await createHelper.createComment(res, postId, userId, req.body.comment_body);
         res.send(addedComment);
 
     } catch (err) {

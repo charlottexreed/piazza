@@ -1,4 +1,7 @@
-async function updateInteraction(post, existingInteraction, type) {
+
+// Change post to object so you can also use it for comments??
+
+async function updateInteraction(res, post, existingInteraction, type) {
     try {
         // Compares the type to the type of the input in order to change the interaction
         if (existingInteraction.type !== type) {
@@ -19,7 +22,7 @@ async function updateInteraction(post, existingInteraction, type) {
             throw new Error('Cannot dislike posts more than once');
         }
     } catch(err) {
-        throw new Error('Error updating interaction: ' + err.message);
+        res.send({message: err})
     }
 }
 

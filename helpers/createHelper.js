@@ -2,7 +2,7 @@ const Post = require("../models/Post");
 const Comment = require("../models/Comment");
 const Interaction = require("../models/Interaction");
 
-async function createPost(title, topic, body, expiry_minutes, userId) {
+async function createPost(res, title, topic, body, expiry_minutes, userId) {
     try {
         // Adds the expiry time in minutes as it is passed through, if it is not it defaults to 30 minutes
         const expiry_minutes = expiry_minutes || 30
@@ -18,11 +18,11 @@ async function createPost(title, topic, body, expiry_minutes, userId) {
         return await postData.save()
 
     } catch (err) {
-        throw new Error('Error creating post: ' + err.message);
+        res.send({message: err})
     }
 }
 
-async function createComment(postId, userId, commentBody) {
+async function createComment(res, postId, userId, commentBody) {
     try {
         // Creates the comment according to the schema
         const newComment = new Comment({
@@ -38,13 +38,13 @@ async function createComment(postId, userId, commentBody) {
         post.comments.push(savedComment._id);
         await post.save()
 
-        return savedComment;
+        return savedComment
     } catch(err) {
-        throw new Error('Error creating comment: ' + err.message);
+        res.send({message: err})
     }
 }
 
-async function createInteraction(post, postId, userId, type) {
+async function createInteraction(res, post, postId, userId, type) {
     try {
         // If there is no existing interaction a new interaction is created
         const newInteraction = new Interaction({
@@ -57,17 +57,17 @@ async function createInteraction(post, postId, userId, type) {
         // Adds the interaction object to the post object so
         // you can track the likes and dislikes attached to
         // a specific post
-        post.interactions.push(savedInteraction._id);
+        post.interactions.push(savedInteraction._id)
 
         if (type === 'like') {
-            post.like_count += 1;
+            post.like_count += 1
         } else if (type === 'dislike') {
-            post.dislike_count += 1;
+            post.dislike_count += 1
         }
 
-        await post.save();
+        await post.save()
     } catch(err) {
-        throw new Error('Error creating interaction: ' + err.message);
+        res.send({message: err})
     }
 }
 
