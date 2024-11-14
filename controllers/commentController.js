@@ -1,10 +1,12 @@
-const Post = require("../models/Post")
-const createHelper = require('../helpers/createHelper')
+const Post = require("../models/Post");
+const createHelper = require('../helpers/createHelper');
+const deleteHelper = require('../helpers/deleteHelper');
+const Interaction = require("../models/Interaction");
 const addComment = async(req,res) => {
     try {
-        const postId = req.params.postId
-        const userId = req.user._id
-        const post = await Post.findById(postId)
+        const postId = req.params.postId;
+        const userId = req.user._id;
+        const post = await Post.findById(postId);
 
         // Checks if the post exists and returns 404 if not
         if (!post) {
@@ -25,10 +27,32 @@ const addComment = async(req,res) => {
         res.send(addedComment);
 
     } catch (err) {
-        res.send({message: err})
+        res.send({message: err});
+    }
+}
+
+const deleteSpecificComment = async(req,res) => {
+    try {
+        const comment = await Comment.findById(req.params.commentId);
+        const commentId = req.params.commentId;
+        const userId = req.params.userId;
+        // If the comment does not exist, it cannot be deleted
+        if(!comment) {
+            return res.status(404).send({message: 'Interaction not found.'});
+        }
+        // If the user does not have permission to delete the comment, the comment cannot be deleted
+        if(String(userId) !== String(comment.owner)) {
+            return res.status(403).send({ message: 'You are not authorized to delete this comment.' });
+        }
+        // Deletes the interaction
+        await deleteHelper.deleteComment(res, commentId);
+        res.status(200).send({ message: "Comment deleted successfully" });
+    } catch (err) {
+        res.status(400).send({ message: "Error deleting comment" });
     }
 }
 
 module.exports = {
-    addComment
+    addComment,
+    deleteSpecificComment
 }

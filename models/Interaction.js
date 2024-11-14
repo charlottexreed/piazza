@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 //S
 const interactionSchema = mongoose.Schema({
@@ -22,4 +22,4 @@ const interactionSchema = mongoose.Schema({
         default: Date.now
     }
 })
-module.exports = mongoose.model('interaction', interactionSchema)
+module.exports = mongoose.model('interaction', interactionSchema);

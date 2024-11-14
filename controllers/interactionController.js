@@ -2,6 +2,7 @@ const Post = require("../models/Post");
 const Interaction = require("../models/Interaction");
 const createHelper = require("../helpers/createHelper");
 const interactionHelper = require("../helpers/interactionHelper");
+const deleteHelper = require("../helpers/deleteHelper");
 const addInteraction = async (req,res) => {
     try {
         const type = req.body.type;
@@ -37,7 +38,7 @@ const addInteraction = async (req,res) => {
             res.status(200).send({ message: 'Interaction updated successfully.' });
         } else {
             // If there is no existing interaction a new interaction is created
-            addedInteraction = await createHelper.createInteraction(res, post, postId, userId, type);
+            addedInteraction = await createHelper.createInteraction(res, post, postId, userId, type)
             res.status(201).send({ message: 'Interaction recorded successfully.' });
         }
     } catch (err) {
@@ -47,7 +48,7 @@ const addInteraction = async (req,res) => {
 const getMostInteracted = async (req,res) => {
     try {
         // Fetch all posts from the database
-        const posts = await Post.find()
+        const posts = await Post.find();
 
         // This checks all the posts against one another to see which has the most
         // interactions by comparing the length of the interactions array I added
@@ -73,7 +74,29 @@ const getMostInteracted = async (req,res) => {
     }
 }
 
+const deleteSpecificInteraction = async(req,res) => {
+    try {
+        const interaction = await Interaction.findById(req.params.interactionId);
+        const interactionId = req.params.interactionId;
+        const userId = req.params.userId;
+        // If the interaction does not exist, it cannot be deleted
+        if(!interaction) {
+            return res.status(404).send({message: 'Interaction not found.'});
+        }
+        // If the user does not have permission to delete the interaction, the interaction cannot be deleted
+        if(String(userId) !== String(interaction.owner)) {
+            return res.status(403).send({ message: 'You are not authorized to delete this interaction.' });
+        }
+        // Deletes the interaction
+        await deleteHelper.deleteInteraction(req, res, interactionId);
+        res.status(200).send({ message: "Interaction deleted successfully" });
+    } catch (err) {
+        res.status(400).send({ message: "Error deleting interaction" });
+    }
+}
+
 module.exports = {
     addInteraction,
     getMostInteracted,
+    deleteSpecificInteraction
 }

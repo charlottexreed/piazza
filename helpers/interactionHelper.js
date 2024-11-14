@@ -1,4 +1,3 @@
-
 // Change post to object so you can also use it for comments??
 
 async function updateInteraction(res, post, existingInteraction, type) {
@@ -22,7 +21,7 @@ async function updateInteraction(res, post, existingInteraction, type) {
             throw new Error('Cannot dislike posts more than once');
         }
     } catch(err) {
-        res.send({message: err})
+        res.send({message: err});
     }
 }
 
