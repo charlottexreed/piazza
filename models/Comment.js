@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-//S
 const commentSchema = mongoose.Schema({
     post: {
         type: mongoose.Schema.Types.ObjectId,

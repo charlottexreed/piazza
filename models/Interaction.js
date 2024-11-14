@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
-//S
-const interactionSchema = mongoose.Schema({
+const InteractionSchema = mongoose.Schema({
     post: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Post',
@@ -22,4 +21,4 @@ const interactionSchema = mongoose.Schema({
         default: Date.now
     }
 })
-module.exports = mongoose.model('interaction', interactionSchema);
+module.exports = mongoose.model('interaction', InteractionSchema);

@@ -4,7 +4,6 @@ const deleteHelper = require("../helpers/deleteHelper");
 
 const addPost = async(req,res) => {
     try {
-        console.log("hi");
         // Adds the expiry time in minutes as it is passed through, if it is not it defaults to 30 minutes
         const expiry_minutes = req.body.expiry_minutes || 30;
         const expiry_time = new Date(Date.now() + expiry_minutes * 60 * 1000);
@@ -14,7 +13,7 @@ const addPost = async(req,res) => {
             req.body.body, expiry_time, req.user._id);
         res.send(postToSave);
     } catch (err) {
-        res.send({message: err});
+        res.status(400).send({message: err});
     }
 }
 
@@ -69,7 +68,6 @@ const getSpecificPost = async(req,res) => {
 const deleteSpecificPost = async(req,res) => {
     try {
         const post = await Post.findById(req.params.postId);
-        const postId = req.params.postId;
         const userId = req.user._id;
         // If the post does not exist, it cannot be deleted
         if(!post) {
@@ -80,10 +78,9 @@ const deleteSpecificPost = async(req,res) => {
             return res.status(403).send({ message: 'You are not authorized to delete this post.' });
         }
         // Deletes the post
-        await deleteHelper.deletePost(post, postId);
+        await deleteHelper.deletePost(post);
         res.status(200).send({ message: "Post deleted successfully" });
     } catch (err) {
-        console.error('Error in deleteSpecificPost:', err);
         res.status(400).send({ message: "Error deleting post" });
     }
 }

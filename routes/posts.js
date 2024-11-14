@@ -5,6 +5,7 @@ const checkExpiry = require('../middleware/checkExpiry');
 const postController = require('../controllers/postController');
 const interactionController = require('../controllers/interactionController');
 const commentController = require('../controllers/commentController');
+const deleteHelper = require('../helpers/deleteHelper');
 
 // Basic get (can be queried for expired or live
 router.get('/', checkExpiry, verifyToken, postController.getAllPosts);
@@ -26,5 +27,8 @@ router.delete('/:postId', checkExpiry, verifyToken, postController.deleteSpecifi
 router.delete('/:postId/:interactionId', checkExpiry, verifyToken, interactionController.deleteSpecificInteraction);
 // Deletes a comment if the user is the owner of said comment
 router.delete('/:postId/comments/:commentId', checkExpiry, verifyToken, commentController.deleteSpecificComment);
+// Deletes all posts, used for testing
+router.delete('/test', verifyToken, deleteHelper.deleteAllPosts)
+// Deletes all users, used for testing
 
 module.exports = router;

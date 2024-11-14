@@ -1,7 +1,6 @@
 const Post = require("../models/Post");
 const createHelper = require('../helpers/createHelper');
 const deleteHelper = require('../helpers/deleteHelper');
-const Interaction = require("../models/Interaction");
 const addComment = async(req,res) => {
     try {
         const postId = req.params.postId;

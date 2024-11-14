@@ -1,16 +1,19 @@
 const Post = require("../models/Post");
 const Interaction = require("../models/Interaction");
-const User = require("../models/User");
+const Comment = require("../models/Comment");
 
-async function deletePost(post, postId) {
+async function deletePost(post) {
     try {
+        console.log("hi");
         // Deletes all interactions and comments from the post before deleting the actual post
         if (post.comments.length > 0) {
             await Comment.deleteMany({ _id: { $in: post.comments } });
         }
+
         if (post.interactions.length > 0) {
             await Interaction.deleteMany({ _id: { $in: post.interactions } });
         }
+
         // Deletes the post itself
         await post.deleteOne();
 
@@ -45,6 +48,8 @@ async function deleteComment(commentId) {
     }
 }
 
+
+
 // Used for debugging and testing only, deletes all posts
 async function deleteAllPosts(res) {
     try {
@@ -65,13 +70,21 @@ async function deleteAllPosts(res) {
         res.status(500).send({ message: "Error deleting all posts" });
     }
 }
-// Also used for testing and debugging, deletes all users
-async function deleteAllUsers(res) {
+async function deleteUserContent(userId) {
     try {
-        await User.deleteMany({});
-        res.status(200).send({ message: "All users deleted successfully" });
-    } catch(err) {
-        res.status(500).send({ message: "Error deleting users" });
+
+        // Find all posts made by the user
+        const posts = await Post.find({ owner: userId });
+        // Delete all associated interactions and comments for each post
+        for (const post of posts) {
+            // Uses the existing deletePost function to handle the deletion of all the posts
+            await deletePost(post);
+        }
+        // Deletes interactions and comments that are attached to other people's posts
+        await Comment.deleteMany({ user: userId });
+        await Interaction.deleteMany({ user: userId });
+    } catch (err) {
+        throw new Error(err.message);
     }
 }
 
@@ -80,5 +93,5 @@ module.exports = {
     deleteInteraction,
     deleteComment,
     deleteAllPosts,
-    deleteAllUsers
+    deleteUserContent
 }

@@ -1,7 +1,7 @@
 const Post = require("../models/Post");
 const Interaction = require("../models/Interaction");
 const createHelper = require("../helpers/createHelper");
-const interactionHelper = require("../helpers/interactionHelper");
+const updateHelper = require("../helpers/updateHelper");
 const deleteHelper = require("../helpers/deleteHelper");
 const addInteraction = async (req,res) => {
     try {
@@ -34,7 +34,7 @@ const addInteraction = async (req,res) => {
             // If there is an existing interaction, checks if the new interaction
             // was not of the same type as the existing interaction, if it is
             // different it updates the old interaction to reflect the new choice
-            await interactionHelper.updateInteraction(post, existingInteraction, type);
+            await updateHelper.updateInteraction(post, existingInteraction, type);
             res.status(200).send({ message: 'Interaction updated successfully.' });
         } else {
             // If there is no existing interaction a new interaction is created
@@ -42,7 +42,7 @@ const addInteraction = async (req,res) => {
             res.status(201).send({ message: 'Interaction recorded successfully.' });
         }
     } catch (err) {
-        res.send({message:err})
+        res.status(400).send({message:err})
     }
 }
 const getMostInteracted = async (req,res) => {
