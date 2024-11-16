@@ -7,20 +7,17 @@ const addPost = async(req,res) => {
         // Makes sure the title is valid
         const title = req.body.title;
         if (!title || typeof title !== 'string' || title.trim().length < 3 || title.trim().length > 70) {
-            console.log('Title validation failed:', title);
             return res.status(400)
                 .send({ message: 'Invalid title, must be a string and contain between 3 and 70 characters.' });
         }
         // Checks if there is a topic
         const topic = req.body.topic;
         if (!topic) {
-            console.log('Title validation failed:', topice);
             return res.status(400).send({ message: 'No topic.' });
         }
         // Basic checks on the body and its length
         const body = req.body.body;
         if (!body || typeof body !== 'string' || body.trim().length < 6 || body.trim().length > 1024) {
-            console.log('Title validation failed:', body);
             return res.status(400).send({ message: 'Invalid body, it must be a string between 6 and 1024 characters.' });
         }
 
