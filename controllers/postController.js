@@ -27,7 +27,7 @@ const addPost = async(req,res) => {
 
         // Creates the post and returns it
         const postToSave = await createHelper.createPost(req.body.title, req.body.topic,
-            req.body.body, expiry_time, req.user._id);
+            req.body.body, expiry_time, expiry_minutes, req.user._id);
         res.status(201).send(postToSave);
     } catch (err) {
         res.status(400).send({message: err});
@@ -111,7 +111,7 @@ const updateExpirationTime = async(req,res) => {
         if(!post) {
             return res.status(404).send({ message: "Post not found" });
         }
-        if(!expiry_minutes && expiry_minutes !== 0) {
+        if(!expiry_minutes && expiry_minutes !== -1) {
             return res.status(400).send({ message: "New expiration time is required" });
         }
         const expiry_time = new Date(Date.now() + expiry_minutes * 60 * 1000);
@@ -121,7 +121,7 @@ const updateExpirationTime = async(req,res) => {
             {
                 expiration_minutes: expiry_minutes,
                 expiration_time: expiry_time,
-                status: expiry_minutes === 0 ? 'Expired' : 'Live'
+                status: expiry_minutes === -1 ? 'Expired' : 'Live'
             },
             { new: true }
         );

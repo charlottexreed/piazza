@@ -47,9 +47,14 @@ const addInteraction = async (req,res) => {
 }
 const getMostInteracted = async (req,res) => {
     try {
-        // Fetch all posts from the database
-        const posts = await Post.find();
-
+        // Filters for live posts
+        let filter = { status: 'Live' };
+        // If topic parameter exists filter for that too
+        if (req.params.topic) {
+            let topic = req.params.topic[0].toUpperCase() + req.params.topic.slice(1).toLowerCase();
+            filter.topic = topic;  // Only add topic filter if topic is provided
+        }
+        const posts = await Post.find(filter);
         // This checks all the posts against one another to see which has the most
         // interactions by comparing the length of the interactions array I added
         // onto the Post schema
@@ -62,12 +67,10 @@ const getMostInteracted = async (req,res) => {
                 mostInteractedPost = post;
             }
         });
-
         // If none then you know there is no posts
         if (!mostInteractedPost) {
             return res.status(404).send({ message: 'No posts found.' });
         }
-
         res.send(mostInteractedPost);
     } catch (err) {
         res.status(400).send({ message: err.message });

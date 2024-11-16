@@ -2,7 +2,7 @@ const Post = require("../models/Post");
 const Comment = require("../models/Comment");
 const Interaction = require("../models/Interaction");
 
-async function createPost(title, topic, body, expiry_time, userId) {
+async function createPost(title, topic, body, expiry_time, expiry_minutes, userId) {
     try {
         // Creates the post according to the schema
         const postData = new Post({
@@ -10,6 +10,7 @@ async function createPost(title, topic, body, expiry_time, userId) {
             topic: topic,
             body: body,
             expiry_time,
+            status: expiry_minutes === -1 ? 'Expired' : 'Live',
             user: userId
         })
         return await postData.save();

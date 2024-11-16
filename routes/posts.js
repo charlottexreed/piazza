@@ -9,12 +9,14 @@ const deleteHelper = require('../helpers/deleteHelper');
 
 // Basic get (can be queried for expired or live
 router.get('/', checkExpiry, verifyToken, postController.getAllPosts);
-// Gets the most interacted with post (likes and dislikes)
+// Gets the most interacted with post (likes and dislikes) of all posts
 router.get('/top-post', checkExpiry, verifyToken, interactionController.getMostInteracted);
 // Gets specific post by postId
 router.get('/:postId', checkExpiry, verifyToken, postController.getSpecificPost);
 // Gets posts by topic
 router.get('/topic/:topic', checkExpiry, verifyToken, postController.getPostsByTopic);
+// Gets the most interacted with post (likes and dislikes) by topic
+router.get('/topic/:topic/top-post', checkExpiry, verifyToken, interactionController.getMostInteracted);
 // Create a post through a schema
 router.post('/', checkExpiry, verifyToken, postController.addPost);
 // Add interaction (like or dislike) to a post
@@ -27,9 +29,9 @@ router.delete('/:postId', checkExpiry, verifyToken, postController.deleteSpecifi
 router.delete('/:postId/:interactionId', checkExpiry, verifyToken, interactionController.deleteSpecificInteraction);
 // Deletes a comment if the user is the owner of said comment
 router.delete('/:postId/comments/:commentId', checkExpiry, verifyToken, commentController.deleteSpecificComment);
-// Deletes all posts, used for testing
-router.delete('/test', verifyToken, deleteHelper.deleteAllPosts);
 // Changes the expiration time, used for a test
 router.patch('/:postId', checkExpiry, verifyToken, postController.updateExpirationTime);
+// Deletes all posts, used for debugging/testing
+//router.delete('/test', verifyToken, deleteHelper.deleteAllPosts);
 
 module.exports = router;
