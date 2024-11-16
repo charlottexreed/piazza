@@ -13,17 +13,22 @@ const addComment = async(req,res) => {
         }
         // Checks if the post is expired and stops interaction if it has
         if (post.status.includes('Expired')) {
-            return res.status(400).send({ message: 'Post has expired, no longer able to interact' });
+            return res.status(403).send({ message: 'Post has expired, no longer able to interact' });
         }
         // Checks if the user is the same as the post owner and disallows posting if
         // the owner is the same
-        if (String(userId) === String(post.owner)) {
+        if (String(userId) === String(post.user)) {
             return res.status(400).send({ message: 'You cannot interact with your own post' });
+        }
+        // Checks the content of comment body is correctly formatted and returns an error status if not
+        const { comment_body } = req.body;
+        if (!comment_body || typeof comment_body !== 'string' || comment_body.trim() === '') {
+            return res.status(400).send({ message: 'Invalid comment body, a non-empty text is required.' });
         }
 
         // Creates the comment and then sends it back
         addedComment = await createHelper.createComment(postId, userId, req.body.comment_body);
-        res.send(addedComment);
+        res.status(201).send(addedComment);
 
     } catch (err) {
         res.send({message: err});
@@ -40,7 +45,7 @@ const deleteSpecificComment = async(req,res) => {
             return res.status(404).send({message: 'Interaction not found.'});
         }
         // If the user does not have permission to delete the comment, the comment cannot be deleted
-        if(String(userId) !== String(comment.owner)) {
+        if(String(userId) !== String(comment.user)) {
             return res.status(403).send({ message: 'You are not authorized to delete this comment.' });
         }
         // Deletes the interaction

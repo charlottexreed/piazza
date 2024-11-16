@@ -4,6 +4,20 @@ const deleteHelper = require("../helpers/deleteHelper");
 
 const addPost = async(req,res) => {
     try {
+        // Makes sure the title is valid
+        if (!title || typeof title !== 'string' || title.trim().length < 3 || title.trim().length > 70) {
+            return res.status(400)
+                .send({ message: 'Invalid title, must be a string and contain between 3 and 70 characters.' });
+        }
+        // Checks if there is a topic
+        if (!topic) {
+            return res.status(400).send({ message: 'No topic.' });
+        }
+        // Basic checks on the body and its length
+        if (!body || typeof body !== 'string' || body.trim().length < 6 || body.trim().length > 1024) {
+            return res.status(400).send({ message: 'Invalid body, it must be a string between 6 and 1024 characters.' });
+        }
+
         // Adds the expiry time in minutes as it is passed through, if it is not it defaults to 30 minutes
         const expiry_minutes = req.body.expiry_minutes || 30;
         const expiry_time = new Date(Date.now() + expiry_minutes * 60 * 1000);
@@ -11,7 +25,7 @@ const addPost = async(req,res) => {
         // Creates the post and returns it
         const postToSave = await createHelper.createPost(req.body.title, req.body.topic,
             req.body.body, expiry_time, req.user._id);
-        res.send(postToSave);
+        res.status(201).send(postToSave);
     } catch (err) {
         res.status(400).send({message: err});
     }
@@ -74,7 +88,7 @@ const deleteSpecificPost = async(req,res) => {
             return res.status(404).send({message: 'Post not found.'});
         }
         // If the user does not have permission to delete the post, the post cannot be deleted
-        if(!post.owner.equals(userId)) {
+        if(!post.user.equals(userId)) {
             return res.status(403).send({ message: 'You are not authorized to delete this post.' });
         }
         // Deletes the post
@@ -85,6 +99,38 @@ const deleteSpecificPost = async(req,res) => {
     }
 }
 
+// Used for a test
+const updateExpirationTime = async(req,res) => {
+    try {
+        const postId = req.params.postId;
+        const { expiry_minutes } = req.body;
+        const post = await Post.findById(postId);
+        if(!post) {
+            return res.status(404).send({ message: "Post not found" });
+        }
+        if(!expiry_minutes && expiry_minutes !== 0) {
+            return res.status(400).send({ message: "New expiration time is required" });
+        }
+        const expiry_time = new Date(Date.now() + expiry_minutes * 60 * 1000);
+        // Updates the expiration time to the new one
+        const updatedPost = await Post.findByIdAndUpdate(
+            postId,
+            {
+                expiration_minutes: expiry_minutes,
+                expiration_time: expiry_time,
+                status: expiry_minutes === 0 ? 'Expired' : 'Live'
+            },
+            { new: true }
+        );
+        if (!updatedPost) {
+            return res.status(400).send({ message: "Error updating expiration time" });
+        }
+        res.status(200).send(updatedPost);
+    } catch (err) {
+        res.status(400).send({ message: "Error updating post"});
+    }
+}
+
 
 module.exports = {
     addPost,
@@ -92,5 +138,6 @@ module.exports = {
     getSpecificPost,
     getPostsByTopic,
     getAllPosts,
-    deleteSpecificPost
+    deleteSpecificPost,
+    updateExpirationTime
 }

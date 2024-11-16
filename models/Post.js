@@ -22,6 +22,10 @@ const postSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    expiry_minutes:{
+        type: Number,
+        default: 30
+    },
     expiry_time:{
         type: Date,
         default: () => Date.now(),
@@ -32,7 +36,7 @@ const postSchema = mongoose.Schema({
         enum: ['Live', 'Expired'],
         default: 'Live'
     },
-    owner:{
+    user:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true

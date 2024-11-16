@@ -28,7 +28,8 @@ router.delete('/:postId/:interactionId', checkExpiry, verifyToken, interactionCo
 // Deletes a comment if the user is the owner of said comment
 router.delete('/:postId/comments/:commentId', checkExpiry, verifyToken, commentController.deleteSpecificComment);
 // Deletes all posts, used for testing
-router.delete('/test', verifyToken, deleteHelper.deleteAllPosts)
-// Deletes all users, used for testing
+router.delete('/test', verifyToken, deleteHelper.deleteAllPosts);
+// Changes the expiration time, used for a test
+router.patch('/:postId', checkExpiry, verifyToken, postController.updateExpirationTime);
 
 module.exports = router;

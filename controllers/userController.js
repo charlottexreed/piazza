@@ -9,7 +9,6 @@ async function getSpecificUser(req,res) {
         if (!user) {
             return res.status(404).send({ message: 'User not found' });
         }
-        console.log(userId + "    " + String(req.params.userId))
         if (String(userId) !== String(user._id)) {
             return res.status(403).send({ message: 'You are not authorized to view the data of this user.' });
         }

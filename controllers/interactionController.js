@@ -15,12 +15,12 @@ const addInteraction = async (req,res) => {
         }
         // Checks if the user is the same as the post owner and disallows posting if
         // the owner is the same
-        if (String(userId) === String(post.owner)) {
+        if (String(userId) === String(post.user)) {
             return res.status(400).send({ message: 'You cannot interact with your own post' });
         }
         // Checks if the post is expired and stops interaction if it has
         if (post.status.includes('Expired')) {
-            return res.status(400).send({ message: 'Post has expired, no longer able to interact' });
+            return res.status(403).send({ message: 'Post has expired, no longer able to interact' });
         }
         // Checks if the input is actually one of the types of interactions implemented
         if (!['like', 'dislike'].includes(type)) {
@@ -84,12 +84,12 @@ const deleteSpecificInteraction = async(req,res) => {
             return res.status(404).send({message: 'Interaction not found.'});
         }
         // If the user does not have permission to delete the interaction, the interaction cannot be deleted
-        if(String(userId) !== String(interaction.owner)) {
+        if(String(userId) !== String(interaction.user)) {
             return res.status(403).send({ message: 'You are not authorized to delete this interaction.' });
         }
         // Deletes the interaction
         await deleteHelper.deleteInteraction(req, interactionId);
-        res.status(200).send({ message: "Interaction deleted successfully" });
+        res.status(201).send({ message: "Interaction deleted successfully" });
     } catch (err) {
         res.status(400).send({ message: "Error deleting interaction" });
     }

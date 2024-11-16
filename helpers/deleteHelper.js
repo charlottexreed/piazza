@@ -74,7 +74,7 @@ async function deleteUserContent(userId) {
     try {
 
         // Find all posts made by the user
-        const posts = await Post.find({ owner: userId });
+        const posts = await Post.find({ user: userId });
         // Delete all associated interactions and comments for each post
         for (const post of posts) {
             // Uses the existing deletePost function to handle the deletion of all the posts

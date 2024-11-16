@@ -10,7 +10,7 @@ async function createPost(title, topic, body, expiry_time, userId) {
             topic: topic,
             body: body,
             expiry_time,
-            owner: userId
+            user: userId
         })
         return await postData.save();
 
