@@ -23,6 +23,10 @@ router.post('/', checkExpiry, verifyToken, postController.addPost);
 router.post('/:postId', checkExpiry, verifyToken, interactionController.addInteraction);
 // Add comment to a post
 router.post('/:postId/comments', checkExpiry, verifyToken, commentController.addComment);
+// Gets all comments on a post
+router.get('/:postId/comments', checkExpiry, verifyToken, commentController.getComments);
+// Gets specific comment on a post
+router.get('/:postId/comments/:commentId', checkExpiry, verifyToken, commentController.getSpecificComment);
 // Deletes a post if the user is the owner of said post
 router.delete('/:postId', checkExpiry, verifyToken, postController.deleteSpecificPost);
 // Deletes an interaction if the user is responsible for the interaction

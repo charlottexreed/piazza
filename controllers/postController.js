@@ -44,9 +44,9 @@ const getPosts = async (req,res, filter = {}) => { // Filter is nothing by defau
         }
         // Finds the post(s) with whatever filter was sent and returns it
         const posts = await Post.find(filter);
-        res.send(posts);
+        res.status(200).send(posts);
     } catch (err) {
-        res.status(400).send({ message: err.message });
+        res.status(400).send({ message: err });
     }
 };
 
@@ -91,13 +91,14 @@ const deleteSpecificPost = async(req,res) => {
             return res.status(404).send({message: 'Post not found.'});
         }
         // If the user does not have permission to delete the post, the post cannot be deleted
-        if(!post.user.equals(userId)) {
+        if(String(userId) !== String(post.user)) {
             return res.status(403).send({ message: 'You are not authorized to delete this post.' });
         }
         // Deletes the post
         await deleteHelper.deletePost(post);
         res.status(200).send({ message: "Post deleted successfully" });
     } catch (err) {
+        console.error('Error caught in deleteSpecificPost:', err.message);
         res.status(400).send({ message: "Error deleting post" });
     }
 }
@@ -113,6 +114,11 @@ const updateExpirationTime = async(req,res) => {
         }
         if(!expiry_minutes && expiry_minutes !== -1) {
             return res.status(400).send({ message: "New expiration time is required" });
+        }
+        // If the user is not the creator of the post they cannot update it
+        const userId = req.user._id;
+        if(!post.user.equals(userId)) {
+            return res.status(403).send({ message: 'You are not authorized to update the post expiry.' });
         }
         const expiry_time = new Date(Date.now() + expiry_minutes * 60 * 1000);
         // Updates the expiration time to the new one

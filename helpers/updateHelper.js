@@ -12,9 +12,11 @@ async function updateInteraction(post, existingInteraction, type) {
                 post.dislike_count -= 1;
                 post.like_count += 1;
             }
+            post.save();
             // Changes the type of interaction and saves
             existingInteraction.type = type;
             await existingInteraction.save();
+            return existingInteraction;
         } else if (existingInteraction.type === "like"){
             throw new Error('Cannot like posts more than once');
         } else {

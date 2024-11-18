@@ -62,8 +62,8 @@ async function createInteraction(post, postId, userId, type) {
         } else if (type === 'dislike') {
             post.dislike_count += 1;
         }
-
         await post.save();
+        return savedInteraction;
     } catch(err) {
         throw new Error(err.message);
     }

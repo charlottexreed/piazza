@@ -12,7 +12,6 @@ async function deletePost(post) {
         if (post.interactions.length > 0) {
             await Interaction.deleteMany({ _id: { $in: post.interactions } });
         }
-
         // Deletes the post itself
         await post.deleteOne();
 
@@ -21,18 +20,19 @@ async function deletePost(post) {
     }
 }
 
-async function deleteInteraction(req, interactionId) {
+async function deleteInteraction(post, interaction) {
     try {
         // Changes the count of likes or dislikes on the post
-        const type = req.body.type;
-        const post = await Post.findById(req.params.postId);
+        const type = interaction.type;
         if (type === 'like') {
             post.like_count -= 1;
         } else if (type === 'dislike') {
             post.dislike_count -= 1;
         }
+        await post.save();
+        console.log(post.title + ": " + post.like_count);
         // Deletes the interaction
-        await Interaction.deleteOne({ _id: interactionId });
+        await Interaction.deleteOne({ _id: interaction._id });
     } catch(err) {
         throw new Error(err.message);
     }
@@ -49,13 +49,12 @@ async function deleteComment(commentId) {
 
 async function deleteUserContent(userId) {
     try {
-
         // Find all posts made by the user
-        const posts = await Post.find({ user: userId });
+        const userPosts = await Post.find({ user: userId });
         // Delete all associated interactions and comments for each post
-        for (const post of posts) {
+        for (const userPost of userPosts) {
             // Uses the existing deletePost function to handle the deletion of all the posts
-            await deletePost(post);
+            await deletePost(userPost);
         }
         // Deletes interactions and comments that are attached to other people's posts
         await Comment.deleteMany({ user: userId });
