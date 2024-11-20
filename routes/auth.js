@@ -15,12 +15,12 @@ router.post('/register', async(req,res)=> {
     // Validation to check user input against the requirements
     const {err} = registerValidation(req.body);
     if (err) {
-        return res.status(400).send({message:err});
+        return res.status(400).send({ message:err });
     }
     // Validation to check if the user exists
-    const userExists = await User.findOne({email:req.body.email});
+    const userExists = await User.findOne({ email:req.body.email });
     if (userExists) {
-        return res.status(400).send({message:'User already exists'});
+        return res.status(400).send({ message:'User already exists' });
     }
     // Created a hashed representation of the password
     const salt = await bcryptjs.genSalt(5);
@@ -37,7 +37,7 @@ router.post('/register', async(req,res)=> {
         const savedUser = await user.save();
         res.send(savedUser);
     } catch(err){
-        res.status(400).send({message:err});
+        res.status(400).send({ message:err });
     }
 })
 // Logs the user in provided they post the details and they are correct
@@ -45,21 +45,21 @@ router.post('/login', async(req,res)=> {
     // Validation to check user input against the requirements
     const {err} = loginValidation(req.body);
     if (err) {
-        return res.status(400).send({message:err});
+        return res.status(400).send({ message:err });
     }
     // Validation to check if the user exists
     const user = await User.findOne({email:req.body.email});
     if (!user) {
-        return res.status(400).send({message:'User does not exist'});
+        return res.status(400).send({ message:'User does not exist' });
     }
     // Validation to check if the password is correct
     const passwordValidation = await bcryptjs.compare(req.body.password, user.password);
     if (!passwordValidation) {
-        return res.status(400).send({message:'Password is incorrect'});
+        return res.status(400).send({ message:'Password is incorrect' });
     }
     //Generate auth token
     const token = jsonwebtoken.sign({_id:user._id}, process.env.TOKEN_SECRET);
-    res.header('auth-token', token).send({'auth-token':token});
+    res.header('auth-token', token).send({ 'auth-token':token });
 })
 
 // Gets the

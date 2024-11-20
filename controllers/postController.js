@@ -30,7 +30,7 @@ const addPost = async(req,res) => {
             req.body.body, expiry_time, expiry_minutes, req.user._id);
         res.status(201).send(postToSave);
     } catch (err) {
-        res.status(400).send({message: err});
+        res.status(400).send({ message: err });
     }
 }
 
@@ -54,7 +54,7 @@ const getAllPosts = async (req,res) => {
     try {
         await getPosts(req,res);
     } catch (err) {
-        res.status(400).send({message: err});
+        res.status(400).send({ message: err });
     }
 }
 
@@ -69,7 +69,7 @@ const getPostsByTopic = async(req,res)=> {
         //Sends the filter to getPosts
         await getPosts(req,res, { topic: { $in: [topic] } });
     } catch (err) {
-        res.status(400).send({message: err});
+        res.status(400).send({ message: err });
     }
 }
 
@@ -78,7 +78,7 @@ const getSpecificPost = async(req,res) => {
         const post = await Post.findById(req.params.postId);
         res.send(post);
     } catch (err) {
-        res.status(400).send({message: err});
+        res.status(400).send({ message: err });
     }
 }
 

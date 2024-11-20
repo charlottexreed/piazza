@@ -6,7 +6,7 @@ const jsonwebtoken = require('jsonwebtoken');
 function auth(req,res,next){
     const token = req.header('auth-token');
     if(!token) {
-        return res.status(401).send({message:'Access denied'});
+        return res.status(401).send({ message:'Access denied' });
     }
 
     try {
@@ -14,7 +14,7 @@ function auth(req,res,next){
         req.user = verified;
         next();
     }catch {
-        return res.status(401).send({message:'Invalid token'});
+        return res.status(401).send({ message:'Invalid token' });
     }
 }
 

@@ -42,7 +42,7 @@ const addInteraction = async (req,res) => {
             res.status(201).send({ message: 'Interaction recorded successfully.', interaction: addedInteraction });
         }
     } catch (err) {
-        res.status(400).send({message:err})
+        res.status(400).send({ message: err.message })
     }
 }
 const getMostInteracted = async (req,res) => {

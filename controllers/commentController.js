@@ -55,8 +55,8 @@ const getComments = async(req,res) => {
 
 const getSpecificComment = async(req,res) => {
     try {
-        postId = req.params.postId;
-        commentId = req.params.commentId;
+        const postId = req.params.postId;
+        const commentId = req.params.commentId;
         const post = await Post.findById(postId);
         if(!post) {
             return res.status(404).send({ message: 'Post not found.' });
@@ -75,7 +75,6 @@ const deleteSpecificComment = async(req,res) => {
     try {
         const comment = await Comment.findById(req.params.commentId);
         const commentId = req.params.commentId;
-        const post = await Post.findById(req.params.postId);
         // If the comment does not exist, it cannot be deleted
         if(!comment) {
             return res.status(404).send({message: 'Interaction not found.'});

@@ -16,7 +16,7 @@ async function createPost(title, topic, body, expiry_time, expiry_minutes, userI
         return await postData.save();
 
     } catch (err) {
-        throw new Error(err.message);
+        throw err;
     }
 }
 
@@ -37,8 +37,8 @@ async function createComment(postId, userId, commentBody) {
         await post.save();
 
         return savedComment
-    } catch(err) {
-        throw new Error(err.message);
+    } catch (err) {
+        throw err;
     }
 }
 
@@ -64,8 +64,8 @@ async function createInteraction(post, postId, userId, type) {
         }
         await post.save();
         return savedInteraction;
-    } catch(err) {
-        throw new Error(err.message);
+    } catch (err) {
+        throw err;
     }
 }
 

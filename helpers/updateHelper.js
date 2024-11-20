@@ -22,8 +22,8 @@ async function updateInteraction(post, existingInteraction, type) {
         } else {
             throw new Error('Cannot dislike posts more than once');
         }
-    } catch(err) {
-        throw new Error(err.message);
+    } catch (err) {
+        throw err;
     }
 }
 

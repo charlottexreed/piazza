@@ -15,8 +15,8 @@ async function deletePost(post) {
         // Deletes the post itself
         await post.deleteOne();
 
-    } catch(err) {
-        throw new Error(err.message);
+    } catch (err) {
+        throw err;
     }
 }
 
@@ -33,8 +33,8 @@ async function deleteInteraction(post, interaction) {
         console.log(post.title + ": " + post.like_count);
         // Deletes the interaction
         await Interaction.deleteOne({ _id: interaction._id });
-    } catch(err) {
-        throw new Error(err.message);
+    } catch (err) {
+        throw err;
     }
 }
 
@@ -42,8 +42,8 @@ async function deleteComment(commentId) {
     try {
         // Deletes the comment
         await Comment.deleteOne({ _id: commentId });
-    } catch(err) {
-        throw new Error(err.message);
+    } catch (err) {
+        throw err;
     }
 }
 
@@ -60,7 +60,7 @@ async function deleteUserContent(userId) {
         await Comment.deleteMany({ user: userId });
         await Interaction.deleteMany({ user: userId });
     } catch (err) {
-        throw new Error(err.message);
+        throw err;
     }
 }
 
