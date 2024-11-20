@@ -30,7 +30,6 @@ async function deleteInteraction(post, interaction) {
             post.dislike_count -= 1;
         }
         await post.save();
-        console.log(post.title + ": " + post.like_count);
         // Deletes the interaction
         await Interaction.deleteOne({ _id: interaction._id });
     } catch (err) {

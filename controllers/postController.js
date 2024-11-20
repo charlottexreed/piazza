@@ -98,7 +98,6 @@ const deleteSpecificPost = async(req,res) => {
         await deleteHelper.deletePost(post);
         res.status(200).send({ message: "Post deleted successfully" });
     } catch (err) {
-        console.error('Error caught in deleteSpecificPost:', err.message);
         res.status(400).send({ message: "Error deleting post" });
     }
 }

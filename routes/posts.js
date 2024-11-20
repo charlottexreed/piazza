@@ -5,7 +5,7 @@ const checkExpiry = require('../middleware/checkExpiry');
 const postController = require('../controllers/postController');
 const interactionController = require('../controllers/interactionController');
 const commentController = require('../controllers/commentController');
-const deleteHelper = require('../helpers/deleteHelper');
+//const deleteHelper = require('../helpers/deleteHelper');
 
 // Basic get (can be queried for expired or live
 router.get('/', checkExpiry, verifyToken, postController.getAllPosts);
