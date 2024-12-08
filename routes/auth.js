@@ -68,7 +68,7 @@ router.post("/login", async (req, res) => {
   res.header("auth-token", token).send({ "auth-token": token });
 });
 
-// Gets the
+// Gets the user
 router.get("/:username", verifyToken, userController.getSpecificUser);
 // Deletes users and all the comments, posts and interactions they have made
 router.delete("/:userId", verifyToken, userController.deleteSpecificUser);
