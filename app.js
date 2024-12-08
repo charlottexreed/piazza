@@ -17,7 +17,7 @@ mongoose
     console.log("Database is now connected");
   })
   .catch((err) => {
-    console.error("Database connection error:", err);
+    console.error("Database connection error: ", err);
   });
 app.listen(3000, () => {
   console.log("Server is running...");

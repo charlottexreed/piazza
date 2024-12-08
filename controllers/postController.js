@@ -20,7 +20,7 @@ const addPost = async (req, res) => {
     // Checks if there is a topic
     const topic = req.body.topic;
     if (!topic) {
-      return res.status(400).send({ message: "No topic." });
+      return res.status(400).send({ message: "No topic" });
     }
     // Basic checks on the body and its length
     const body = req.body.body;
@@ -32,7 +32,7 @@ const addPost = async (req, res) => {
     ) {
       return res.status(400).send({
         message:
-          "Invalid body, it must be a string between 6 and 1024 characters.",
+          "Invalid body, it must be a string between 6 and 1024 characters",
       });
     }
 

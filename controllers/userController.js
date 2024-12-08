@@ -1,5 +1,4 @@
 const User = require("../models/User");
-const Post = require("../models/Post");
 const deleteHelper = require("../helpers/deleteHelper");
 
 async function getSpecificUser(req, res) {
